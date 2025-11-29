@@ -51,7 +51,7 @@ S 5 50
 # Aperiodic Job (Arrives at t=12, Exec=2)
 A 12 2
 ```
-##🛠️ Installation & Usage
+## 🛠️ Installation & Usage
 
 ### Method 1: Running from Source (Recommended)
 
@@ -78,7 +78,7 @@ python main.py
 
 Download RTSS_Simulator.exe (Windows) or RTSS_Simulator.app (macOS) from the Releases page.
 
-##📝 Reporting Module
+## 📝 Reporting Module
 
 After a simulation runs, the "💾 Export Report" button becomes active. It generates:
 
@@ -86,6 +86,6 @@ After a simulation runs, the "💾 Export Report" button becomes active. It gene
 
   2.Report_X.png: A high-quality Gantt chart image.
 
-##👨‍💻 Author
+## 👨‍💻 Author
 
 Batuhan Computer Engineering Student @ Istanbul Technical University (İTÜ)
