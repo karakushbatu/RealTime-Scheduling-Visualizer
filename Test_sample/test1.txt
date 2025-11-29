@@ -1,0 +1,10 @@
+# Periyodik Gorevler (P: Standart, D: Deadline'li)
+P 0 10 50     # Release=0, Exec=10, Period=50 (Deadline=50)
+D 10 100 80   # Exec=10, Period=100, Deadline=80 (Release=0)
+
+# SERVER TANIMI (S Harfi ile - Kapasite, Periyot)
+S 5 50        # Server Kapasitesi=5, Server Periyodu=50
+
+# Aperiodic Isler (A Harfi ile)
+A 12 2        # t=12'de geldi, 2 birim surecek
+A 60 4        # t=60'ta geldi, 4 birim surecek
