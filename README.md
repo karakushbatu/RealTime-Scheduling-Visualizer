@@ -82,10 +82,10 @@ Download RTSS_Simulator.exe (Windows) or RTSS_Simulator.app (macOS) from the Rel
 
 After a simulation runs, the "💾 Export Report" button becomes active. It generates:
 
-  1.Report_X.txt: Contains simulation logs, miss counts, utilization stats, and input summary.
+  1. Report_X.txt: Contains simulation logs, miss counts, utilization stats, and input summary.
 
-  2.Report_X.png: A high-quality Gantt chart image.
+  2. Report_X.png: A high-quality Gantt chart image.
 
 ## 👨‍💻 Author
 
-Batuhan Computer Engineering Student @ Istanbul Technical University (İTÜ)
+Batuhan Karakuş - Computer Engineering Student @ Istanbul Technical University (İTÜ)
