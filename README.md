@@ -9,6 +9,15 @@ A comprehensive simulation tool developed for the **Real-Time Systems Software**
 This application visualizes various real-time scheduling algorithms on both **Single-core** and **Multi-core** architectures with a modern GUI.
 
 ---
+## 📥 Download
+
+You can download the ready-to-run application (Windows & macOS) along with the full report from the link below:
+
+[![Download Release](https://img.shields.io/badge/Download-RTSS__Simulator__v1.0.0-blue?style=for-the-badge&logo=github)]([BURAYA_KOPYALADIGIN_RELEASE_LINKINI_YAPISTIR](https://github.com/karakushbatu/RealTime-Scheduling-Visualizer/releases/tag/1.0.0))
+
+**Note:** If the link above doesn't work, please check the [Releases Page](../../releases/latest).
+
+---
 
 ## 🚀 Features
 
