@@ -1,0 +1,12 @@
+# Dhall's Effect Simulation (Use with 2 Cores)
+# Demonstrates Global RM failure even at low utilization.
+# T1 & T2 are light but high freq. T3 is heavy but low freq.
+
+# T1: High Priority (Short Period)
+P 0 2 10 10
+# T2: High Priority (Short Period)
+P 0 2 10 10
+
+# T3: Low Priority (Long Period) but HEAVY execution
+# Global RM might schedule T1 & T2 on both cores, leaving T3 late.
+P 0 9 12 12

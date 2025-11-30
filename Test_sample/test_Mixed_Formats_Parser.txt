@@ -1,0 +1,19 @@
+# MIXED FORMAT ROBUSTNESS TEST
+# This file tests the parser's ability to handle all supported formats simultaneously.
+
+# Standard Periodic (4 params: r, e, p, d)
+P 0 10 50 50
+
+# Periodic Implicit Release (3 params: e, p, d) - Wait! Parser logic for P is r,e,p. 
+# Let's use the standard supported P format from your code logic:
+# P r e p (Implicit D=P)
+P 5 10 60
+
+# Deadline Driven (3 params: e, p, d) -> Implicit r=0
+D 15 80 40
+
+# Server Task (2 params: cap, per)
+S 8 80
+
+# Aperiodic Job (2 params: arr, exec)
+A 25 5

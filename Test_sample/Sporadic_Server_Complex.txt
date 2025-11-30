@@ -1,0 +1,8 @@
+# Sporadic Server Complex Replenishment
+# High priority server with frequent aperiodic bursts
+
+S 5 20
+P 0 10 40 40
+A 2 2
+A 8 2
+A 25 3

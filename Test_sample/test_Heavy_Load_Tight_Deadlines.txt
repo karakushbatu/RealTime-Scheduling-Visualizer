@@ -1,0 +1,16 @@
+# TIGHT DEADLINE STRESS TEST
+# Total Utilization is manageable (~85%), but deadlines are very tight (D << P).
+# This requires precise scheduling (EDF or DM recommended).
+
+# T1: Needs 10ms within first 15ms! (Exec=10, Per=50, D=15)
+D 10 50 15
+
+# T2: Needs 15ms within first 25ms! (Exec=15, Per=60, D=25)
+D 15 60 25
+
+# T3: Standard load
+P 0 20 100 100
+
+# Background noise (Aperiodic)
+A 5 2
+A 8 2

@@ -1,0 +1,18 @@
+# Aperiodic Burst Attack
+# Testing Server Replenishment Logic
+# Server: Capacity 4, Period 10 (40% Load just for server!)
+
+S 4 10
+
+# Background Periodic Noise
+P 0 3 20 20
+
+# BURST ARRIVALS (Trying to overflow the server queue)
+A 2 1
+A 3 2
+A 5 1
+A 8 2
+A 11 1
+A 12 3
+A 15 2
+A 22 1
