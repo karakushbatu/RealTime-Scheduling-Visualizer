@@ -5,7 +5,7 @@
 ![Status](https://img.shields.io/badge/Status-Completed-success.svg)
 ![University](https://img.shields.io/badge/University-ITU-red.svg)
 
-A comprehensive simulation tool developed for the **Real-Time Systems Software** course at **Istanbul Technical University (İTÜ)**.  
+A comprehensive simulation tool developed for the **Real-Time Systems Software** course at **Istanbul Technical University (ITU)**.  
 This application visualizes various real-time scheduling algorithms on both **Single-core** and **Multi-core** architectures with a modern GUI.
 ---
 
