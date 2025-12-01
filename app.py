@@ -337,7 +337,7 @@ def draw_gantt(raw_schedule, tasks, simulation_time, num_cores, algorithm):
 def main():
     st.markdown("## ⏱️ RTSS Simulator - ITU ")
     st.markdown("""
-    A web-based simulator for **BLG 450E**. Supports Multicore, Sporadic Server, EDF, and **Least Laxity First**.
+    A web-based simulator for **BLG 450E**. Supports Sporadic Server, Deferable Server, RM, DM, EDF, LLF and Multicore.
     *Developed by Batuhan.*
     """)
 
