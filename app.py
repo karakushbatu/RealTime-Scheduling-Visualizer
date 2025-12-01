@@ -378,10 +378,33 @@ def main():
         if st.button("Generate Random Set", type="primary"):
             st.session_state.tasks = generate_smart_random_tasks(rn, ra, ru, rs)
             st.success(f"Generated {len(st.session_state.tasks)} random tasks.")
-
     with tab3:
-        default_txt = "# P r e p d\n# S e p\n# A r e\nP 0 10 50 50\nS 5 50\nA 12 2"
-        txt_input = st.text_area("Paste Task Data Here", value=default_txt, height=150)
+        default_txt = """# FORMAT GUIDE:
+# ---------------------------------------------------------
+# PERIODIC TASKS (P):
+# P r e p d   -> Release(r), Exec(e), Period(p), Deadline(d)
+# P r e p     -> Implicit Deadline (d=p)
+# P e p       -> Synchronous (r=0), Implicit Deadline (d=p)
+
+# DEADLINE DRIVEN (D) - (Alternative Periodic):
+# D e p d     -> Exec(e), Period(p), Deadline(d) [r=0]
+# D r e p d   -> Full definition
+
+# SERVER (S):
+# S e p       -> Capacity(e), Replenishment Period(p)
+
+# APERIODIC (A):
+# A r e       -> Arrival(r), Execution(e)
+# ---------------------------------------------------------
+
+# EXAMPLE SET:
+P 0 10 50 50   # Standard Periodic
+P 20 100       # Periodic (r=0, d=100)
+D 5 40 30      # Deadline Driven (r=0, d=30)
+S 5 50         # Server Task
+A 12 2         # Aperiodic Job
+"""
+        txt_input = st.text_area("Paste Task Data Here", value=default_txt, height=300)
         if st.button("Load Manual Data"):
             st.session_state.tasks = parse_content(txt_input)
             st.success("Loaded manual tasks.")
