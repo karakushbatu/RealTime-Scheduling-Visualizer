@@ -346,9 +346,9 @@ def draw_gantt(raw_schedule, tasks, simulation_time, num_cores, algorithm):
 # =============================================================================
 
 def main():
-    st.markdown("## ⏱️ Real-Time Scheduling Simulator (ITU Gold)")
+    st.markdown("## ⏱️ Real-Time Scheduling Simulator")
     st.markdown("""
-    A web-based simulator for **BLG 456E**. Supports Multicore, Sporadic Server, and EDF.
+    A web-based simulator for **BLG 450E**. Supports Multicore, Sporadic Server, and EDF.
     *Developed by Batuhan.*
     """)
 
