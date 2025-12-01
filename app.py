@@ -7,7 +7,6 @@ import copy
 import io
 import time
 
-# --- SAYFA AYARLARI ---
 st.set_page_config(
     page_title="RTSS Simulator - ITU",
     page_icon="⏱️",
@@ -15,14 +14,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- MATPLOTLIB BACKEND ---
-# Web sunucularında hata vermemesi için 'Agg' backend kullanıyoruz.
+
 import matplotlib
 matplotlib.use('Agg')
-
-# =============================================================================
-# 1. VERİ YAPILARI (MODEL)
-# =============================================================================
 
 class Task:
     def __init__(self, task_type, args, original_char):
@@ -41,7 +35,6 @@ class Task:
 
     def parse_args(self, args):
         n = len(args)
-        # Periodic (P)
         if self.task_type == 'P':
             if self.original_char == 'P':
                 if n == 4: self.arrival_time, self.burst_time, self.period, self.deadline = args
@@ -51,7 +44,6 @@ class Task:
                 if n == 3: self.arrival_time = 0; self.burst_time, self.period, self.deadline = args
                 elif n == 4: self.arrival_time, self.burst_time, self.period, self.deadline = args
             self.relative_deadline = self.deadline
-        # Server (S)
         elif self.task_type == 'S':
             self.arrival_time = 0
             self.burst_time = args[0]
@@ -60,7 +52,6 @@ class Task:
             self.relative_deadline = self.period
             self.server_capacity = self.burst_time
             self.current_budget = self.burst_time
-        # Aperiodic (A)
         elif self.task_type == 'A':
             if n >= 2:
                 self.arrival_time = args[0]
@@ -69,9 +60,6 @@ class Task:
                 self.deadline = 99999
                 self.relative_deadline = 99999
 
-# =============================================================================
-# 2. YARDIMCI FONKSİYONLAR
-# =============================================================================
 
 def calculate_lcm(tasks):
     periods = [t.period for t in tasks if t.period > 0]
@@ -79,7 +67,7 @@ def calculate_lcm(tasks):
     lcm = periods[0]
     for p in periods[1:]:
         lcm = abs(lcm * p) // math.gcd(lcm, p)
-    return min(lcm, 2000) # Web performans için sınır
+    return min(lcm, 2000) 
 
 def calculate_utilization(tasks):
     u = 0.0
@@ -113,7 +101,6 @@ def parse_content(content):
             
             new_task = Task(t_type, clean_args, char_code)
             new_task.id = task_counter
-            # Web Colors
             if t_type == 'S': new_task.color = '#a6e3a1' 
             elif t_type == 'A': new_task.color = '#fab387' 
             else: new_task.color = '#89b4fa' 
@@ -162,10 +149,6 @@ def generate_smart_random_tasks(total_tasks, num_aperiodic, target_util, include
         
     for i, t in enumerate(tasks): t.id = i + 1
     return tasks
-
-# =============================================================================
-# 3. SIMULATION ENGINE (CORE LOGIC)
-# =============================================================================
 
 def run_simulation(tasks, algorithm, num_cores):
     periodic_tasks = [t for t in tasks if t.task_type == 'P']
@@ -235,11 +218,22 @@ def run_simulation(tasks, algorithm, num_cores):
                      if not aperiodic_queue: job['remaining'] = 0 
                      break
 
-        # 5. Sorting
+        # 5. SORTING (PRIORITY ASSIGNMENT)
         ready_queue = [j for j in ready_queue if j['remaining'] > 0]
-        if algorithm == "Earliest Deadline First (EDF)": ready_queue.sort(key=lambda x: (x['abs_deadline'], x['task'].id))
-        elif algorithm == "Deadline Monotonic (DM)": ready_queue.sort(key=lambda x: (x['task'].relative_deadline, x['task'].id))
-        else: ready_queue.sort(key=lambda x: (x['task'].period if x['task'].period > 0 else 9999, x['task'].id))
+        
+        if algorithm == "Least Laxity First (LLF)":
+            # LAXITY = (Absolute Deadline - Current Time) - Remaining Execution
+            # Lower Laxity = Higher Priority
+            ready_queue.sort(key=lambda x: ((x['abs_deadline'] - t - x['remaining']), x['task'].id))
+            
+        elif algorithm == "Earliest Deadline First (EDF)": 
+            ready_queue.sort(key=lambda x: (x['abs_deadline'], x['task'].id))
+            
+        elif algorithm == "Deadline Monotonic (DM)": 
+            ready_queue.sort(key=lambda x: (x['task'].relative_deadline, x['task'].id))
+            
+        else: # Rate Monotonic (Default)
+            ready_queue.sort(key=lambda x: (x['task'].period if x['task'].period > 0 else 9999, x['task'].id))
 
         # 6. Dispatching
         cores_available = num_cores
@@ -281,9 +275,6 @@ def run_simulation(tasks, algorithm, num_cores):
 
     return schedule_log, lcm, stats
 
-# =============================================================================
-# 4. GANTT CHART (MATPLOTLIB FOR WEB)
-# =============================================================================
 
 def draw_gantt(raw_schedule, tasks, simulation_time, num_cores, algorithm):
     merged_schedule = []
@@ -291,7 +282,9 @@ def draw_gantt(raw_schedule, tasks, simulation_time, num_cores, algorithm):
     for item in raw_schedule:
         if not merged_schedule: merged_schedule.append(item); continue
         last = merged_schedule[-1]
-        if (last['core'] == item['core'] and last['task_id'] == item['task_id'] and last['status'] == item['status'] and last['label'] == item['label'] and last['time'] + last['duration'] == item['time']):
+        if (last['core'] == item['core'] and last['task_id'] == item['task_id'] and 
+            last['status'] == item['status'] and last['label'] == item['label'] and 
+            last['time'] + last['duration'] == item['time']):
             last['duration'] += 1 
         else: merged_schedule.append(item) 
 
@@ -341,23 +334,20 @@ def draw_gantt(raw_schedule, tasks, simulation_time, num_cores, algorithm):
     
     return fig
 
-# =============================================================================
-# 5. STREAMLIT APP LAYOUT
-# =============================================================================
-
 def main():
-    st.markdown("## ⏱️ Real-Time Scheduling Simulator")
+    st.markdown("## ⏱️ RTSS Simulator - ITU Gold (Web Edition)")
     st.markdown("""
-    A web-based simulator for **BLG 450E**. Supports Multicore, Sporadic Server, and EDF.
+    A web-based simulator for **BLG 456E**. Supports Multicore, Sporadic Server, EDF, and **Least Laxity First**.
     *Developed by Batuhan.*
     """)
 
     # --- SIDEBAR CONFIG ---
     with st.sidebar:
         st.header("⚙️ Configuration")
-        num_cores = st.number_input("Number of Cores", min_value=1, max_value=4, value=1)
+        num_cores = st.number_input("CPU Cores", min_value=1, max_value=4, value=1)
         algorithm = st.selectbox("Scheduling Algorithm", [
-            "Rate Monotonic (RM)", "Deadline Monotonic (DM)", "Earliest Deadline First (EDF)", 
+            "Rate Monotonic (RM)", "Deadline Monotonic (DM)", 
+            "Earliest Deadline First (EDF)", "Least Laxity First (LLF)",
             "Background", "Poller", "Deferrable Server", "Sporadic Server", "RM Baseline"
         ])
         
@@ -366,8 +356,7 @@ def main():
         st.info("Upload a .txt file or Generate random tasks to begin.")
 
     # --- SESSION STATE ---
-    if 'tasks' not in st.session_state:
-        st.session_state.tasks = []
+    if 'tasks' not in st.session_state: st.session_state.tasks = []
     
     # --- TABS FOR INPUT ---
     tab1, tab2, tab3 = st.tabs(["📂 Load File", "🎲 Random Generator", "✏️ Manual Input"])
@@ -377,14 +366,14 @@ def main():
         if uploaded_file is not None:
             content = uploaded_file.getvalue().decode("utf-8")
             st.session_state.tasks = parse_content(content)
-            st.success(f"Loaded {len(st.session_state.tasks)} tasks from file.")
+            st.success(f"Loaded: {uploaded_file.name} ({len(st.session_state.tasks)} tasks)")
 
     with tab2:
         col1, col2 = st.columns(2)
         rn = col1.number_input("Total Tasks", 1, 20, 5)
         ra = col2.number_input("Aperiodic Count", 0, 10, 1)
         ru = st.slider("Target Utilization", 0.1, 4.0, 0.8)
-        rs = st.checkbox("Add Server Task?", value=True)
+        rs = st.checkbox("Add Server?", value=True)
         
         if st.button("Generate Random Set", type="primary"):
             st.session_state.tasks = generate_smart_random_tasks(rn, ra, ru, rs)
@@ -404,28 +393,19 @@ def main():
         # Utilization Bar
         u = calculate_utilization(st.session_state.tasks)
         cap = num_cores * 1.0
+        status_color = "red" if u > cap else "green"
+        st.markdown(f"### System Load: :{status_color}[{u*100:.1f}%] (Capacity: {cap*100:.0f}%)")
         
-        col_u1, col_u2 = st.columns([3, 1])
-        with col_u1:
-            st.markdown(f"**System Load:** `{u*100:.1f}%` (Capacity: `{cap*100:.0f}%`)")
-            if u > cap:
-                st.error("⚠️ SYSTEM OVERLOAD DETECTED")
-            else:
-                st.success("✅ System Safe")
-        
-        with col_u2:
-            if st.button("📋 View Task List"):
-                task_data = [{"ID": f"T{t.id}", "Type": t.task_type, "C": t.burst_time, "P": t.period, "D": t.deadline} for t in st.session_state.tasks]
-                st.dataframe(task_data, hide_index=True)
+        with st.expander("View Task List"):
+            task_data = [{"ID": t.id, "Type": t.task_type, "C": t.burst_time, "P": t.period, "D": t.deadline} for t in st.session_state.tasks]
+            st.table(task_data)
 
         # --- RUN SIMULATION ---
         if st.button("▶ START SIMULATION", type="primary", use_container_width=True):
             with st.spinner("Simulating..."):
-                # Run Logic
                 sim_tasks = copy.deepcopy(st.session_state.tasks)
                 schedule, duration, stats = run_simulation(sim_tasks, algorithm, num_cores)
                 
-                # Check Errors
                 if 'error' in stats:
                     st.error(stats['error'])
                 else:
@@ -441,14 +421,12 @@ def main():
                     st.pyplot(fig)
                     
                     # Export
-                    # Text Report
-                    report_txt = f"Algorithm: {algorithm}\nCores: {num_cores}\nLoad: {u*100:.1f}%\nMisses: {stats['missed_deadlines']}\n"
-                    st.download_button("💾 Download Report (.txt)", report_txt, file_name=f"Report_{algorithm.split()[0]}.txt")
+                    report_text = f"Algorithm: {algorithm}\nCores: {num_cores}\nLoad: {u*100:.1f}%\nMisses: {stats['missed_deadlines']}\n"
+                    st.download_button("💾 Download Report (.txt)", report_text, file_name=f"Report_{algorithm.split()[0]}.txt")
                     
-                    # Image Report
-                    img_buffer = io.BytesIO()
-                    fig.savefig(img_buffer, format="png")
-                    st.download_button("🖼️ Download Chart (.png)", img_buffer, file_name=f"Chart_{algorithm.split()[0]}.png", mime="image/png")
+                    img = io.BytesIO()
+                    fig.savefig(img, format='png')
+                    st.download_button("🖼️ Download Chart (.png)", img, file_name=f"Chart_{algorithm.split()[0]}.png", mime="image/png")
 
     else:
         st.warning("Waiting for tasks...")
