@@ -7,6 +7,13 @@
 
 A comprehensive simulation tool developed for the **Real-Time Systems Software** course at **Istanbul Technical University (İTÜ)**.  
 This application visualizes various real-time scheduling algorithms on both **Single-core** and **Multi-core** architectures with a modern GUI.
+---
+
+### 🌐 Try It Live! (Web Application)
+
+You can run the full simulator directly in your browser without installing anything.
+
+> **[Click Here to Launch Web App 🚀](https://realtime-scheduling-visualizer-iupupgyeettbgfq5xinukt.streamlit.app/)**
 
 ---
 ## 📥 Download
